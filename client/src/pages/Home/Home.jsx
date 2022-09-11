@@ -5,11 +5,15 @@ import AuthContext from '../../context/AuthContext'// import Authtemp from '../A
 import './Home.scss'
 import cookie from 'js-cookie'
 import { useNavigate } from 'react-router-dom';
+import LoderContext from '../../context/LoaderContext'
 
 const Home = () => {
 
+   //!loder get
+   const {LoderDispatch} = useContext(LoderContext)
+
    // use auth context
-   const {dispatch}= useContext(AuthContext);
+   const {dispatch, user}= useContext(AuthContext);
 
    const navigate = useNavigate();
 
@@ -20,6 +24,7 @@ const Home = () => {
       cookie.remove('user');
       dispatch({type : 'LOGOUT_USER'});
       navigate('/login');
+      LoderDispatch({type : "LODER_START"})
 
   }
 
@@ -85,11 +90,11 @@ const Home = () => {
                <div className="user-info">
                   <div className="user-details">
                      <div className="user-image">
-                        <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200" alt="" />
+                     <img src={user.photo ? user.photo : 'https://img.freepik.com/premium-vector/young-man-avatar-cartoon-character-profile-picture_18591-55055.jpg?w=2000'} alt="" />
                      </div>
                      <div className="user-name">
-                        <h3>Rakib Adnan</h3>
-                        <p>@rakibadnan</p>
+                        <h3>{user.name}</h3>
+                        <p>{user.username}</p>
                         <a  href="#" onClick={handleUserLogout} >LogOut</a>
                         </div>
                   </div>

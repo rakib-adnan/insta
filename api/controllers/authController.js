@@ -1,7 +1,11 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
+import Token from "../models/Token.js";
 import createError from "./errorController.js";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../utility/sendEmail.js";
+import { createToken } from "../utility/createToken.js";
+// import { sendSms } from "../utility/sendSms.js";
 
    /** 
      * 
@@ -56,10 +60,23 @@ import jwt from "jsonwebtoken";
         const has_pass = await bcrypt.hash(req.body.password, salt);
         try {
             const user = await User.create({...req.body, password : has_pass});
+
+            //? create token from api/utility/createToken
+            const token = createToken({id : user._id});
+
+            //* token update from api/models/token
+
+            await Token.create({ userId : user._id, token : token})
+
+            //! send activition Email link from api utility sendEmail
+            const verify_link = `http://localhost:3000/user/${user._id}/verify/${token}`
+            await sendEmail(user.email, "verify Account", verify_link);
             res.status(200).json(user);
+            // sendSms();
         } catch (error) {
             console.log(error);
             next(error);
         }
     }   
+   
  

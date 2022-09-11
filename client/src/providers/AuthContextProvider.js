@@ -7,7 +7,8 @@ import AuthReducer from "../reducers/AuthReducer";
     //! create state
     export const initial = { 
         token : cookie.get('token') || null,
-       user : cookie.get('user') ? JSON.parse(cookie.get('user')) : null
+        isUserLoggedIn : false,
+        user : { }
     }
    
 
@@ -17,7 +18,7 @@ const AuthContextProvider = ({ children }) => {
     return (
         <AuthContext.Provider
         value={{
-            token: state.token,
+            isUserLoggedIn : state.isUserLoggedIn,
             user: state.user,
             dispatch
         }}
